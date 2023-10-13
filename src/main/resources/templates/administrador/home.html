@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Spring eCommerce</title>
+  <!-- Bootstrap core CSS -->
+  <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link th:href="@{css/heroic-features.css}" rel="stylesheet">
+</head>
+<body>
+<div th:fragment="administrador/template_admin.html::header">
+  <header class="jumbotron my-4">
+    <h1 class="display-3">Bienvenido a Spring Ecommerce 2021</h1>
+    <p class="lead">Tu tienda de productos en Línea</p>
+  </header>
+  <div class="container">
+    <!-- Page Features -->
+    <div class="row text-center">
+      <!-- ... (contenido de la página) ... -->
+    </div>
+  </div>
+</div>
+<div th:fragment="administrador/template_admin.html::footer">
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Spring eCommerce 2021</p>
+    </div>
+  </footer>
+</div>
+<!-- Bootstrap core JavaScript -->
+<script th:src="@{vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,6 +1,14 @@
 package com.curso.ecommerce.model;
 
+import jakarta.persistence.*;
+
+import java.util.List;
+
+@Entity
+@Table(name = "usuario")
 public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
     private String username;
@@ -10,6 +18,11 @@ public class Usuario {
     private String tipo;
     private String password;
 
+    @OneToMany(mappedBy = "usuario")
+    private List<Producto> productos;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Orden> ordenes;
     public Usuario() {
     }
 
@@ -86,6 +99,22 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
+    }
+
+    public List<Orden> getOrdenes() {
+        return ordenes;
+    }
+
+    public void setOrdenes(List<Orden> ordenes) {
+        this.ordenes = ordenes;
     }
 
     @Override
