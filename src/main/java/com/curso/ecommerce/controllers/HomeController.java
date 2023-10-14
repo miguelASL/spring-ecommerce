@@ -45,7 +45,7 @@ public class HomeController {
         return "usuario/productohome";
     }
 
-    @PostMapping("/car")
+    @PostMapping("/carrito")
     public String carrito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) {
         DetalleOrden detalle = new DetalleOrden();
         Producto producto = new Producto();
@@ -62,6 +62,13 @@ public class HomeController {
         detalle.setNombre(producto.getNombre());
         detalle.setPrecio(producto.getPrecio());
         detalle.setProducto(producto);
+
+        //Validar si el producto ya existe en el carrito
+        Integer idProducto = producto.getId();
+        boolean ingresado = detalles.stream().anyMatch(p -> p.getProducto().getId() == idProducto);
+        if (!ingresado) {
+            detalles.add(detalle);
+        }
 
         sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
         return "usuario/carrito";
@@ -80,6 +87,15 @@ public class HomeController {
         detalles = ordenesNueva;
         double sumaTotal = 0;
         sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
+        return "usuario/carrito";
+    }
+
+    @GetMapping("/getCarrito")
+    public String getCarrito(Model model) {
+        model.addAttribute("cart", detalles);
+        model.addAttribute("orden", orden);
+/*        double sumaTotal = 0;
+        sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();*/
         return "usuario/carrito";
     }
 }
