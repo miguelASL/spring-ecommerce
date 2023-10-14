@@ -2,6 +2,8 @@ package com.curso.ecommerce.model;
 
 import jakarta.persistence.*;
 
+import java.util.stream.IntStream;
+
 @Entity
 @Table(name = "detalles")
 public class DetalleOrden {
@@ -10,7 +12,7 @@ public class DetalleOrden {
     private Integer id;
     private String nombre;
     private double cantidad;
-    private double precio;
+    private static double precio;
     private double total;
 
     @OneToOne
@@ -53,7 +55,7 @@ public class DetalleOrden {
         this.cantidad = cantidad;
     }
 
-    public double getPrecio() {
+    public static double getPrecio() {
         return precio;
     }
 

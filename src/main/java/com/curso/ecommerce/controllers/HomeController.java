@@ -28,13 +28,15 @@ public class HomeController {
 
     // Datos de la orden
     Orden orden = new Orden();
+
     @GetMapping("/")
-    public String home(Model model){
+    public String home(Model model) {
         model.addAttribute("productos", productoService.findAll());
         return "usuario/home";
     }
+
     @GetMapping("/productohome/{id}")
-    public String productHome(@PathVariable Integer id, Model model){
+    public String productHome(@PathVariable Integer id, Model model) {
         log.info("Mostrando producto con id: {}", id);
         Producto producto = new Producto();
         Optional<Producto> productoOptional = ProductoService.get(id);
@@ -44,7 +46,7 @@ public class HomeController {
     }
 
     @PostMapping("/car")
-    public String carrito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model){
+    public String carrito(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) {
         DetalleOrden detalle = new DetalleOrden();
         Producto producto = new Producto();
         double sumaTotal = 0;
@@ -53,6 +55,31 @@ public class HomeController {
         assert Objects.requireNonNull(productoOptional).isPresent();
         log.info("Mostrando producto con id: {}", productoOptional.get());
         log.info("Cantidad: {}", cantidad);
+        producto = productoOptional.get();
+
+        detalle.setCantidad(cantidad);
+        detalle.setPrecio(producto.getPrecio());
+        detalle.setNombre(producto.getNombre());
+        detalle.setPrecio(producto.getPrecio());
+        detalle.setProducto(producto);
+
+        sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
+        return "usuario/carrito";
+    }
+
+    // Quita un producto del carrito
+    @GetMapping("/delete/cart/{id}")
+    public String deleteProducto(@PathVariable Integer id, Model model) {
+        List<DetalleOrden> ordenesNueva = new ArrayList<DetalleOrden>(); // Lista para almacenar los productos que no se eliminan
+        for (DetalleOrden detalle : detalles) {
+            if (detalle.getProducto().getId() != id) {
+                ordenesNueva.add(detalle);
+            }
+        }
+        // ponemos la nueva lista en la lista original
+        detalles = ordenesNueva;
+        double sumaTotal = 0;
+        sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
         return "usuario/carrito";
     }
 }
