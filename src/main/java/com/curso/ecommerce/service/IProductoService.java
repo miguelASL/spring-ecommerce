@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public interface ProductoService {
+public interface IProductoService {
     public Producto save(Producto producto);
 
     public static Optional<Producto> get(Integer id) {

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductoServiceImpl implements ProductoService{
+public class IProductoServiceImpl implements IProductoService {
 
     @Autowired
     private ProductoRepository productoRepository;

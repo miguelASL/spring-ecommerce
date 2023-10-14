@@ -3,7 +3,9 @@ package com.curso.ecommerce.controllers;
 import com.curso.ecommerce.model.DetalleOrden;
 import com.curso.ecommerce.model.Orden;
 import com.curso.ecommerce.model.Producto;
-import com.curso.ecommerce.service.ProductoService;
+import com.curso.ecommerce.model.Usuario;
+import com.curso.ecommerce.service.IProductoService;
+import com.curso.ecommerce.service.IUsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,19 @@ public class HomeController {
     private final Logger log = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
-    private ProductoService productoService;
+    private IProductoService IProductoService;
     // Para almacenar los productos que se agregan al carrito
     List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
+
+    @Autowired
+    private IUsuarioService usuarioService;
 
     // Datos de la orden
     Orden orden = new Orden();
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("productos", productoService.findAll());
+        model.addAttribute("productos", IProductoService.findAll());
         return "usuario/home";
     }
 
@@ -39,7 +44,7 @@ public class HomeController {
     public String productHome(@PathVariable Integer id, Model model) {
         log.info("Mostrando producto con id: {}", id);
         Producto producto = new Producto();
-        Optional<Producto> productoOptional = ProductoService.get(id);
+        Optional<Producto> productoOptional = com.curso.ecommerce.service.IProductoService.get(id);
         producto = productoOptional.get();
         model.addAttribute("producto", producto);
         return "usuario/productohome";
@@ -51,7 +56,7 @@ public class HomeController {
         Producto producto = new Producto();
         double sumaTotal = 0;
 
-        Optional<Producto> productoOptional = ProductoService.get(id);
+        Optional<Producto> productoOptional = com.curso.ecommerce.service.IProductoService.get(id);
         assert Objects.requireNonNull(productoOptional).isPresent();
         log.info("Mostrando producto con id: {}", productoOptional.get());
         log.info("Cantidad: {}", cantidad);
@@ -100,7 +105,11 @@ public class HomeController {
     }
 
     @GetMapping("/order")
-    public String order(){
+    public String order(Model model) {
+        Usuario usuario = usuarioService.findById(1).get();
+        model.addAttribute("cart", detalles);
+        model.addAttribute("orden", orden);
+        model.addAttribute("usuario", usuario);
         return "usuario/resumenorder";
     }
 }
