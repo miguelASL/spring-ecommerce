@@ -6,6 +6,7 @@ import com.curso.ecommerce.service.ProductoService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,8 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
     @GetMapping("/")
-    public String show() {
+    public String show(Model model) {
+        model.addAttribute("productos", productoService.findAll());
         return "productos/index";
     }
 
@@ -28,7 +30,7 @@ public class ProductoController {
     }
     @PostMapping("/save")
     public String save(Producto producto){
-        LOGGER.info("Guardando producto: {}", producto);
+        LOGGER.info("Guardando producto: {}");
         Usuario u = new Usuario(1, "", "", "", "", "","", "");
         producto.setUsuario(u);
         productoService.save(producto);
