@@ -98,4 +98,9 @@ public class HomeController {
         sumaTotal = detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();*/
         return "usuario/carrito";
     }
+
+    @GetMapping("/order")
+    public String order(){
+        return "usuario/resumenorder";
+    }
 }
