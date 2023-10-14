@@ -3,15 +3,13 @@ package com.curso.ecommerce.controllers;
 import com.curso.ecommerce.model.Producto;
 import com.curso.ecommerce.model.Usuario;
 import com.curso.ecommerce.service.ProductoService;
+import com.curso.ecommerce.service.UploadFileService;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @Controller
@@ -21,6 +19,8 @@ public class ProductoController {
     private final Logger LOGGER = LoggerFactory.getLogger(ProductoController.class); //Logger para mostrar mensajes en consola
     @Autowired
     private ProductoService productoService;
+    @Autowired
+    private UploadFileService upload;
 
     @GetMapping("/")
     public String show(Model model) {
@@ -34,10 +34,25 @@ public class ProductoController {
     }
 
     @PostMapping("/save")
-    public String save(Producto producto) {
+    public String save(Producto producto,@RequestParam("img") MultipartFile file) {
         LOGGER.info("Guardando producto: {}");
         Usuario u = new Usuario(1, "", "", "", "", "", "", "");
         producto.setUsuario(u);
+
+        //imagen
+        if (producto.getId() == null){
+            String nombreImagen = upload.saveImage(file);
+            producto.setImagen(nombreImagen);
+        }else {
+            if (!file.isEmpty()) { // editamos el producto pero no cambiamos la imagen
+                Producto p = new Producto();
+                p = ProductoService.get(producto.getId()).get();
+                producto.setImagen(p.getImagen());
+            } else { // editamos el producto y cambiamos la imagen
+                String nombreImagen = upload.saveImage(file);
+                producto.setImagen(nombreImagen);
+            }
+        }
         productoService.save(producto);
         return "redirect:/productos/";
     }
@@ -45,7 +60,7 @@ public class ProductoController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
         Producto producto = new Producto();
-        Optional<Producto> optionalProducto = productoService.get(id);
+        Optional<Producto> optionalProducto = ProductoService.get(id);
 
         LOGGER.info("Editando producto: {}", producto);
         model.addAttribute("producto", producto);
