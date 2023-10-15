@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -142,5 +143,13 @@ public class HomeController {
         orden = new Orden();
         detalles.clear();
         return "redirect:/";
+    }
+
+    @PostMapping("/search")
+    public String searchProduct(@RequestParam String nombre, Model model){
+        log.info("Buscando producto con nombre: {}", nombre);
+        List<Producto> productos = IProductoService.findAll().stream().filter(p -> p.getNombre().contains(nombre)).toList();
+        model.addAttribute("productos", productos);
+        return "usuario/home";
     }
 }
